@@ -1,0 +1,380 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  KYC_REVIEWER
+  RATE_MANAGER
+  DELIVERY_MANAGER
+  SUPPORT_AGENT
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DocumentType {
+  PAN
+  PASSPORT
+  VISA
+  TICKET
+  ADDRESS_PROOF
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrderType {
+  BUY_FOREX
+  SELL_FOREX
+  FOREX_CARD
+  CARD_RELOAD
+}
+
+enum OrderStatus {
+  DRAFT
+  SUBMITTED
+  KYC_PENDING
+  KYC_APPROVED
+  PAYMENT_PENDING
+  PAYMENT_VERIFIED
+  RATE_LOCKED
+  PROCESSING
+  OUT_FOR_DELIVERY
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  INITIATED
+  VERIFIED
+  FAILED
+  REFUNDED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUOTED
+  WON
+  LOST
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum OrderEventType {
+  ORDER_CREATED
+  ORDER_SUBMITTED
+  KYC_APPROVED
+  KYC_REJECTED
+  RATE_LOCKED
+  RATE_EXPIRED
+  PAYMENT_VERIFIED
+  PAYMENT_REJECTED
+  ORDER_APPROVED
+  ORDER_REJECTED
+  PROCESSING_STARTED
+  DELIVERY_ASSIGNED
+  OUT_FOR_DELIVERY
+  ORDER_COMPLETED
+  ORDER_CANCELLED
+  INVOICE_GENERATED
+  NOTE_ADDED
+}
+
+enum OtpPurpose {
+  PHONE_LOGIN
+  ADMIN_2FA
+}
+
+enum WebhookStatus {
+  RECEIVED
+  PROCESSED
+  REJECTED
+  FAILED
+}
+
+model User {
+  id             String          @id @default(cuid())
+  name           String?
+  email          String?         @unique
+  phone          String?         @unique
+  passwordHash   String?
+  emailVerified  DateTime?
+  phoneVerified  DateTime?
+  role           UserRole        @default(CUSTOMER)
+  status         UserStatus      @default(PENDING_VERIFICATION)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  adminTwoFactorEnabled Boolean  @default(false)
+  kycProfile     KycProfile?
+  documents      Document[]
+  orders         Order[]
+  insuranceLeads InsuranceLead[]
+  tickets        SupportTicket[]
+  auditLogs      AuditLog[]      @relation("ActorLogs")
+  accounts       Account[]
+  sessions       Session[]
+  otpChallenges  OtpChallenge[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model OtpChallenge {
+  id                String     @id @default(cuid())
+  userId            String?
+  identifier        String
+  purpose           OtpPurpose
+  provider          String
+  providerRequestId String
+  codeHash          String?
+  expiresAt         DateTime
+  resendAvailableAt DateTime
+  attempts          Int        @default(0)
+  maxAttempts       Int        @default(5)
+  verifiedAt        DateTime?
+  consumedAt        DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  user              User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([identifier, purpose, createdAt])
+  @@index([userId, purpose, createdAt])
+}
+
+model KycProfile {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  panNumber      String?
+  passportNumber String?
+  address        String?
+  status         KycStatus @default(PENDING)
+  reviewedBy     String?
+  reviewNotes    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id         String         @id @default(cuid())
+  userId     String
+  orderId    String?
+  type       DocumentType
+  fileUrl    String
+  status     DocumentStatus @default(PENDING)
+  uploadedAt DateTime       @default(now())
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order      Order?         @relation(fields: [orderId], references: [id])
+}
+
+model Currency {
+  id        String         @id @default(cuid())
+  code      String         @unique
+  name      String
+  symbol    String
+  country   String
+  flagEmoji String
+  isActive  Boolean        @default(true)
+  rates     CurrencyRate[]
+}
+
+model CurrencyRate {
+  id         String   @id @default(cuid())
+  currencyId String
+  buyRate    Decimal  @db.Decimal(12, 4)
+  sellRate   Decimal  @db.Decimal(12, 4)
+  cardRate   Decimal  @db.Decimal(12, 4)
+  margin     Decimal  @db.Decimal(6, 4)
+  source     String   @default("manual")
+  updatedBy  String?
+  createdAt  DateTime @default(now())
+  currency   Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+
+  @@index([currencyId, createdAt])
+}
+
+model Order {
+  id                 String        @id @default(cuid())
+  orderNumber        String        @unique
+  userId             String
+  type               OrderType
+  currencyCode       String
+  amount             Decimal       @db.Decimal(14, 2)
+  rate               Decimal       @db.Decimal(12, 4)
+  totalInINR         Decimal       @db.Decimal(14, 2)
+  purpose            String?
+  destinationCountry String?
+  travelDate         DateTime?
+  deliveryAddress    String?
+  status             OrderStatus   @default(DRAFT)
+  paymentStatus      PaymentStatus @default(PENDING)
+  kycStatus          KycStatus     @default(PENDING)
+  assignedTo         String?
+  customerNotes      String?
+  adminNotes         String?
+  rejectionReason    String?
+  rateLockedAt       DateTime?
+  rateLockExpiresAt  DateTime?
+  approvedBy         String?
+  approvedAt         DateTime?
+  completedAt        DateTime?
+  invoiceNumber      String?       @unique
+  invoiceUrl         String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  user               User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  documents          Document[]
+  payment            Payment?
+  events             OrderEvent[]
+
+  @@index([status, createdAt])
+  @@index([currencyCode, createdAt])
+  @@index([paymentStatus, createdAt])
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String        @unique
+  provider          String
+  providerPaymentId String?
+  amount            Decimal       @db.Decimal(14, 2)
+  status            PaymentStatus @default(INITIATED)
+  verifiedBy        String?
+  verifiedAt        DateTime?
+  verificationNotes String?
+  createdAt         DateTime      @default(now())
+  order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model OrderEvent {
+  id        String         @id @default(cuid())
+  orderId   String
+  actorId   String?
+  type      OrderEventType
+  title     String
+  message   String?
+  metadata  Json?
+  createdAt DateTime       @default(now())
+  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+}
+
+model InsuranceLead {
+  id          String     @id @default(cuid())
+  userId      String?
+  name        String
+  phone       String
+  email       String
+  destination String
+  startDate   DateTime
+  endDate     DateTime
+  age         Int
+  purpose     String
+  status      LeadStatus @default(NEW)
+  assignedTo  String?
+  notes       String?
+  createdAt   DateTime   @default(now())
+  user        User?      @relation(fields: [userId], references: [id])
+}
+
+model SupportTicket {
+  id         String       @id @default(cuid())
+  userId     String
+  subject    String
+  message    String
+  status     TicketStatus @default(OPEN)
+  assignedTo String?
+  createdAt  DateTime     @default(now())
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String
+  oldValue   Json?
+  newValue   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("ActorLogs", fields: [actorId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+}
+
+model WebhookEvent {
+  id          String        @id @default(cuid())
+  provider    String
+  eventId     String
+  eventType   String
+  payloadHash String
+  status      WebhookStatus @default(RECEIVED)
+  error       String?
+  receivedAt  DateTime      @default(now())
+  processedAt DateTime?
+
+  @@unique([provider, eventId])
+  @@index([provider, status, receivedAt])
+}

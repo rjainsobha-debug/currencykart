@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" role="img" aria-label="CurrencyKart logo">
+  <rect width="720" height="180" fill="#07111F"/>
+  <g transform="translate(30 28) scale(.98)">
+  <defs>
+    <linearGradient id="g" x1="18" y1="14" x2="112" y2="116" gradientUnits="userSpaceOnUse"><stop stop-color="#0B1B32"/><stop offset="0.48" stop-color="#123F5A"/><stop offset="1" stop-color="#00A887"/></linearGradient>
+    <linearGradient id="gold" x1="28" y1="20" x2="96" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#F8D37B"/><stop offset="1" stop-color="#B88A2E"/></linearGradient>
+  </defs>
+  <rect x="10" y="10" width="108" height="108" rx="24" fill="#07111F"/>
+  <path d="M36 46h56l-7 31H43L36 46Z" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M40 46c4-13 14-22 28-22 10 0 18 4 24 11" fill="none" stroke="#F8D37B" stroke-width="6" stroke-linecap="round"/>
+  <path d="M91 35h15v15" fill="none" stroke="#F8D37B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M35 82c8 11 19 17 33 17 11 0 21-4 29-12" fill="none" stroke="#34D6B4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M35 82H20V67" fill="none" stroke="#34D6B4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="48" cy="91" r="5" fill="#F8D37B"/><circle cx="84" cy="91" r="5" fill="#F8D37B"/>
+</g>
+  <text x="166" y="82" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800" fill="#FFFFFF">CurrencyKart</text>
+  <text x="170" y="116" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="600" letter-spacing="1.6" fill="#BBD4DD">TRAVEL MONEY, DELIVERED SMARTLY</text>
+  <path d="M170 136h212" stroke="#C9A24D" stroke-width="5" stroke-linecap="round"/>
+</svg>

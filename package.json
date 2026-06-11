@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "vercel:build": "npm run prisma:generate && npm run build",
+    "postinstall": "prisma generate",
     "prestart": "npm run env:validate",
     "start": "next start",
     "lint": "eslint .",

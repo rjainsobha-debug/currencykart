@@ -7,7 +7,8 @@ Use Vercel Hobby/Free for the first staging deployment.
 3. Use Neon Free for `DATABASE_URL`.
 4. Add every required staging variable from `.env.staging.example`.
 5. Keep OTP, email, payment, WhatsApp and storage providers as `placeholder` for the first deploy.
-6. Use a build command of `npm run prisma:generate && npm run build`.
+6. Keep Vercel's default build command: `npm run build`. The `postinstall`
+   script generates Prisma Client automatically after dependency installation.
 7. Run `npm run prisma:migrate:deploy` manually after deployment when the Neon database is ready.
 8. Add `staging.currencykart.in` as the Vercel project domain.
 9. Point Cloudflare DNS to Vercel with a DNS-only CNAME.

@@ -319,7 +319,7 @@ Vercel steps:
 2. Import the GitHub repository.
 3. Keep the Next.js framework preset.
 4. Choose the Hobby/Free plan for staging.
-5. Set the build command to `npm run vercel:build`.
+5. Keep Vercel's default build command: `npm run build`.
 6. Add the staging environment variables above.
 7. Deploy.
 8. Add `staging.currencykart.in` under the Vercel project domains.

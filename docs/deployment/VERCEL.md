@@ -4,17 +4,33 @@ Use Vercel Hobby/Free for the first staging deployment.
 
 1. Push the repository to GitHub Free.
 2. Import the repository into Vercel and select the Next.js preset.
-3. Use Neon Free for `DATABASE_URL`.
-4. Add every required staging variable from `.env.staging.example`.
-5. Keep OTP, email, payment, WhatsApp and storage providers as `placeholder` for the first deploy.
-6. Keep Vercel's default build command: `npm run build`. The `postinstall`
+3. Leave Root Directory blank; this Git repository is already rooted at the
+   Next.js application.
+4. Set Install Command to `npm install`.
+5. Set Build Command to `npm run build`.
+6. Leave Output Directory blank. The `postinstall`
    script generates Prisma Client automatically after dependency installation.
-7. Run `npm run prisma:migrate:deploy` manually after deployment when the Neon database is ready.
-8. Add `staging.currencykart.in` as the Vercel project domain.
-9. Point Cloudflare DNS to Vercel with a DNS-only CNAME.
-10. Run the staging smoke-test subset from `docs/QA_CHECKLIST.md`.
+7. Select Node.js `22.x`.
+8. Use Neon Free for the runtime `DATABASE_URL`.
+9. Add every required staging variable from `.env.staging.example`.
+10. Keep OTP, email, payment, WhatsApp and storage providers as `placeholder` for the first deploy.
+11. Run `npm run prisma:migrate:deploy` manually after deployment when the Neon database is ready.
+12. Add `staging.currencykart.in` as the Vercel project domain.
+13. Point Cloudflare DNS to Vercel with a DNS-only CNAME.
+14. Run the staging smoke-test subset from `docs/QA_CHECKLIST.md`.
 
 Do not run demo seeding automatically in production.
+
+Run deployments from the web application root, where `package.json`,
+`next.config.mjs` and `app/page.tsx` are present:
+
+```powershell
+npx vercel --prod
+```
+
+Do not use `vercel deploy --prebuilt` after a failed local `vercel build`.
+An incomplete `.vercel/output` can deploy successfully while containing no
+routes, causing Vercel's platform-level `404 NOT_FOUND` response on every URL.
 
 ## Staging with Cloudflare DNS
 

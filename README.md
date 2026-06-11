@@ -317,12 +317,20 @@ Vercel steps:
 
 1. Open Vercel and choose **Add New Project**.
 2. Import the GitHub repository.
-3. Keep the Next.js framework preset.
-4. Choose the Hobby/Free plan for staging.
-5. Keep Vercel's default build command: `npm run build`.
-6. Add the staging environment variables above.
-7. Deploy.
-8. Add `staging.currencykart.in` under the Vercel project domains.
+3. Leave **Root Directory** blank because the repository root contains
+   `package.json`, `next.config.mjs` and `app/page.tsx`.
+4. Keep the Next.js framework preset.
+5. Set **Install Command** to `npm install`.
+6. Set **Build Command** to `npm run build`.
+7. Leave **Output Directory** blank so Vercel uses the Next.js build output.
+8. Choose Node.js `22.x`.
+9. Add the staging environment variables above and deploy.
+10. Add `staging.currencykart.in` under the Vercel project domains.
+
+Deploy from the Vercel dashboard or run `npx vercel --prod` from the directory
+containing this `package.json`. Do not deploy `.vercel/output` with
+`--prebuilt` unless `npx vercel build` completed successfully and that folder
+contains the generated Next.js routes, functions and static assets.
 
 ### Database-free UI preview builds
 

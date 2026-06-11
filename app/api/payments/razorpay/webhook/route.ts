@@ -6,6 +6,9 @@ import { verifyPaymentWebhook } from "@/lib/integrations";
 import { ApiError, handleApiError } from "@/lib/api-error";
 import { logger } from "@/lib/logger";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 type RazorpayPayload = {
   event?: string;
   payload?: {

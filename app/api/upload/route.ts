@@ -6,6 +6,9 @@ import { requireOrderOwner, requireUser } from "@/lib/authz";
 import { enforceRateLimit, requestIdentifier } from "@/lib/rate-limit";
 import { ApiError, handleApiError, validationError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   try {
     const user = await requireUser();

@@ -319,10 +319,27 @@ Vercel steps:
 2. Import the GitHub repository.
 3. Keep the Next.js framework preset.
 4. Choose the Hobby/Free plan for staging.
-5. Set build command to `npm run prisma:generate && npm run build`.
+5. Set the build command to `npm run vercel:build`.
 6. Add the staging environment variables above.
 7. Deploy.
 8. Add `staging.currencykart.in` under the Vercel project domains.
+
+### Database-free UI preview builds
+
+The public website, metadata, sitemap and robots routes do not query PostgreSQL
+during `next build`. Prisma is initialized lazily, and authenticated dashboards
+plus database-backed API routes are rendered only when requested at runtime.
+
+For an initial UI-only Vercel preview, the build can use a syntactically valid
+placeholder without connecting to it:
+
+```text
+DATABASE_URL=postgres://user:pass@db.example.com:5432/app
+```
+
+Use this only for UI preview deployments. Login, dashboards, orders, KYC,
+payments and document workflows require a reachable Neon `DATABASE_URL` at
+runtime. Configure the real Neon value before testing those functions.
 
 Cloudflare DNS steps:
 

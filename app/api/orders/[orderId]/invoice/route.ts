@@ -4,6 +4,9 @@ import { requireOrderOwner } from "@/lib/authz";
 import { createStorageDownloadUrl } from "@/lib/integrations";
 import { ApiError, handleApiError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function GET(_request: Request, context: { params: Promise<{ orderId: string }> }) {
   const { orderId } = await context.params;
   try {

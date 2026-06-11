@@ -6,6 +6,9 @@ import { handleApiError, validationError } from "@/lib/api-error";
 import { requestOtpChallenge } from "@/lib/otp-service";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const otpSchema = z.object({ phone: z.string().min(10).max(15) });
 
 export async function POST(request: Request) {

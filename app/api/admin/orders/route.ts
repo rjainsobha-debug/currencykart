@@ -6,6 +6,9 @@ import { requireAdminRole } from "@/lib/authz";
 import { enforceRateLimit, requestIdentifier } from "@/lib/rate-limit";
 import { handleApiError, validationError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const adminQueueRoles = [UserRole.ADMIN, UserRole.KYC_REVIEWER, UserRole.RATE_MANAGER, UserRole.DELIVERY_MANAGER, UserRole.SUPPORT_AGENT];
 
 export async function GET(request: Request) {

@@ -6,6 +6,8 @@ import { StatusState } from "@/components/StatusState";
 import { AdminOrderOperations } from "@/components/AdminOrderOperations";
 import { AdminTwoFactorPanel } from "@/components/AdminTwoFactorPanel";
 
+export const dynamic = "force-dynamic";
+
 const queues = ["New orders", "Pending KYC", "Payment verification", "Currency rates", "Insurance leads", "Forex card leads", "Document review", "Delivery management", "Staff roles", "Audit logs", "Reports"];
 
 export default function AdminDashboardPage() {

@@ -7,6 +7,9 @@ import { requireAdminRole } from "@/lib/authz";
 import { enforceRateLimit, requestIdentifier } from "@/lib/rate-limit";
 import { handleApiError, validationError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const actionRoles: Record<string, UserRole[]> = {
   APPROVE_ORDER: [UserRole.ADMIN, UserRole.SUPPORT_AGENT],
   REJECT_ORDER: [UserRole.ADMIN, UserRole.SUPPORT_AGENT],

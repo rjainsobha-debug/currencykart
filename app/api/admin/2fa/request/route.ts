@@ -4,6 +4,9 @@ import { requireAdminRole } from "@/lib/authz";
 import { requestOtpChallenge } from "@/lib/otp-service";
 import { ApiError, handleApiError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const staffRoles = [UserRole.ADMIN, UserRole.KYC_REVIEWER, UserRole.RATE_MANAGER, UserRole.DELIVERY_MANAGER, UserRole.SUPPORT_AGENT];
 
 export async function POST(request: Request) {

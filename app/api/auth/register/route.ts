@@ -6,6 +6,9 @@ import { sendEmailVerification } from "@/lib/integrations";
 import { enforceRateLimit, requestIdentifier } from "@/lib/rate-limit";
 import { ApiError, handleApiError, validationError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const registrationSchema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),

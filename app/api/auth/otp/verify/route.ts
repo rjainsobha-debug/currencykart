@@ -5,6 +5,9 @@ import { verifyOtpChallenge } from "@/lib/otp-service";
 import { handleApiError, validationError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const schema = z.object({ challengeId: z.string().min(1), phone: z.string().min(10), code: z.string().length(6) });
 
 export async function POST(request: Request) {

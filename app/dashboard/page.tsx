@@ -5,6 +5,8 @@ import { MotionReveal, MotionStagger, MotionItem } from "@/components/MotionReve
 import { StatusState } from "@/components/StatusState";
 import { CustomerOrderWorkspace } from "@/components/CustomerOrderWorkspace";
 
+export const dynamic = "force-dynamic";
+
 export default function CustomerDashboardPage() {
   return (
     <>

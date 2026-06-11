@@ -6,6 +6,9 @@ import { handleApiError, validationError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
 import { enforceRateLimit, requestIdentifier } from "@/lib/rate-limit";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const schema = z.object({ phone: z.string().min(10).max(15) });
 
 export async function POST(request: Request) {

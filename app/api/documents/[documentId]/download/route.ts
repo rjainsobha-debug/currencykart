@@ -5,6 +5,9 @@ import { requireUser } from "@/lib/authz";
 import { createStorageDownloadUrl } from "@/lib/integrations";
 import { ApiError, handleApiError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const staffRoles: UserRole[] = [UserRole.ADMIN, UserRole.KYC_REVIEWER, UserRole.SUPPORT_AGENT];
 
 export async function GET(_request: Request, context: { params: Promise<{ documentId: string }> }) {

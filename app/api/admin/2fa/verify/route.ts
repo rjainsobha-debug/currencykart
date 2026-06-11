@@ -6,6 +6,9 @@ import { verifyOtpChallenge } from "@/lib/otp-service";
 import { adminTwoFactorCookieName, createAdminTwoFactorToken } from "@/lib/admin-2fa";
 import { ApiError, handleApiError, validationError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 const staffRoles = [UserRole.ADMIN, UserRole.KYC_REVIEWER, UserRole.RATE_MANAGER, UserRole.DELIVERY_MANAGER, UserRole.SUPPORT_AGENT];
 const schema = z.object({ challengeId: z.string().min(1), code: z.string().length(6) });
 
